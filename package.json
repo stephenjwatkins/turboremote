@@ -1,0 +1,15 @@
+{
+  "name": "@turboremote/turboremote",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:cli": "pnpm --filter turboremote dev",
+    "dev:server": "pnpm --filter \"@turboremote/server\" dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
