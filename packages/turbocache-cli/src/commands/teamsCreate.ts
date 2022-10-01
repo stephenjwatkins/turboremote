@@ -1,15 +1,16 @@
+import chalk from "chalk";
 import inquirer from "inquirer";
 import { createTeam } from "../api";
 import { wait } from "../utils/console";
+import { sleep } from "../utils/promise";
 import { getGreeting } from "../utils/time";
 import { acquireToken } from "../utils/token";
 import { isValidTeamName } from "../utils/validation";
 
 export async function teamsCreate() {
   console.log("");
-  console.log(getGreeting());
-
-  console.log("Let's create a new team on Turboremote.");
+  console.log("  " + getGreeting());
+  console.log("  Let's create a new team on Turboremote.");
   console.log("");
 
   const token = await acquireToken();
@@ -21,10 +22,18 @@ export async function teamsCreate() {
         isValidTeamName(value) ? true : "Please enter a valid team name.",
     },
   ]);
-  const spinner = wait("Creating team");
 
+  console.log("");
+  const spinner = wait("Got it. Saving team on Turboremote.");
   await createTeam(token, { name });
-  spinner.succeed("Team successfully created with you as the owner.");
-  console.log("You can invite members to the team with:");
-  console.log("npx turboremote invite");
+  await sleep(2500);
+  spinner.succeed("Done!");
+  console.log("  Team saved to Turboremote with you as the owner.");
+  console.log("");
+  console.log("  To link this team to the project, run:");
+  console.log(chalk.bold("  npx turboremote link"));
+  console.log("");
+  console.log("  To invite members to the team, run:");
+  console.log(chalk.bold("  npx turboremote members:add"));
+  console.log("");
 }

@@ -4,7 +4,7 @@ import { wait } from "../utils/console";
 import { acquireToken } from "../utils/token";
 import { isValidEmail } from "../utils/validation";
 
-export async function teamsAddMember() {
+export async function membersAdd() {
   console.log("");
 
   const token = await acquireToken();

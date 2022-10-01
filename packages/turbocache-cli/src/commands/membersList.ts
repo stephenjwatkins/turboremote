@@ -1,15 +1,9 @@
 import inquirer from "inquirer";
-import {
-  addTeamMember,
-  fetchMemberships,
-  fetchTeamMemberships,
-  removeTeamMember,
-} from "../api";
-import { Membership } from "../api/utils";
+import { fetchMemberships, fetchTeamMemberships } from "../api";
 import { wait } from "../utils/console";
 import { acquireToken } from "../utils/token";
 
-export async function teamsListMembers() {
+export async function membersList() {
   console.log("");
 
   const token = await acquireToken();

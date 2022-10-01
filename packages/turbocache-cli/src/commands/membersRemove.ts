@@ -1,6 +1,5 @@
 import inquirer from "inquirer";
 import {
-  addTeamMember,
   fetchMemberships,
   fetchTeamMemberships,
   removeTeamMember,
@@ -9,7 +8,7 @@ import { Membership } from "../api/utils";
 import { wait } from "../utils/console";
 import { acquireToken } from "../utils/token";
 
-export async function teamsRemoveMember() {
+export async function membersRemove() {
   console.log("");
 
   const token = await acquireToken();

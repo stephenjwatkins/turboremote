@@ -13,10 +13,10 @@ import { tokensList } from "./commands/tokensList";
 import { tokensCreate } from "./commands/tokensCreate";
 import { tokensDelete } from "./commands/tokensDelete";
 import { teamsList } from "./commands/teamsList";
-import { teamsAddMember } from "./commands/teamsAddMember";
-import { teamsRemoveMember } from "./commands/teamsRemoveMember";
 import { teamsCreate } from "./commands/teamsCreate";
-import { teamsListMembers } from "./commands/teamsListMembers";
+import { membersList } from "./commands/membersList";
+import { membersAdd } from "./commands/membersAdd";
+import { membersRemove } from "./commands/membersRemove";
 
 (async () => {
   const argv = await yargs
@@ -86,19 +86,19 @@ import { teamsListMembers } from "./commands/teamsListMembers";
       "members",
       "List members of a team",
       () => {},
-      turborepoCommand(teamsListMembers)
+      turborepoCommand(membersList)
     )
     .command(
       "members:add",
       "Add a member to a team",
       () => {},
-      turborepoCommand(teamsAddMember)
+      turborepoCommand(membersAdd)
     )
     .command(
       "members:remove",
       "Remove a member from a team",
       () => {},
-      turborepoCommand(teamsRemoveMember)
+      turborepoCommand(membersRemove)
     )
     .help().argv;
 
