@@ -7,7 +7,17 @@ export const devTransport = {
 };
 
 export const getLogger = () => {
-  return {
-    transport: process.env.NODE_ENV === "production" ? undefined : devTransport,
-  };
+  return process.env.NODE_ENV === "production"
+    ? true
+    : {
+        transport: devTransport,
+        serializers: {
+          req: (request: any) => {
+            return request.url;
+          },
+          res: (res: any) => {
+            return res.statusCode;
+          },
+        },
+      };
 };

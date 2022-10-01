@@ -11,39 +11,98 @@ import { unlink } from "./commands/unlink";
 import { status } from "./commands/status";
 import { tokensList } from "./commands/tokensList";
 import { tokensCreate } from "./commands/tokensCreate";
+import { tokensDelete } from "./commands/tokensDelete";
+import { teamsList } from "./commands/teamsList";
+import { teamsAddMember } from "./commands/teamsAddMember";
+import { teamsRemoveMember } from "./commands/teamsRemoveMember";
+import { teamsCreate } from "./commands/teamsCreate";
+import { teamsListMembers } from "./commands/teamsListMembers";
 
-(() => {
-  yargs
+(async () => {
+  const argv = await yargs
     .scriptName("")
-    .usage("turborepo <cmd> [args]")
-    .command("login", "Log in to Turboremote", turborepoCommand(logIn))
-    .command("logout", "Log out of Turboremote", turborepoCommand(logOut))
-    .command("link", "Link a repo to Turboremote", turborepoCommand(link))
+    .usage("turboremote <cmd> [args]")
+    .command(
+      "login",
+      "Sign in to Turboremote",
+      () => {},
+      turborepoCommand(logIn)
+    )
+    .command(
+      "logout",
+      "Sign out of Turboremote",
+      () => {},
+      turborepoCommand(logOut)
+    )
+    .command(
+      "link",
+      "Link a project to Turboremote",
+      () => {},
+      turborepoCommand(link)
+    )
     .command(
       "unlink",
-      "Unlink a repo from Turboremote",
+      "Unlink a project from Turboremote",
+      () => {},
       turborepoCommand(unlink)
     )
     .command(
       "status",
-      "View a repo's status with Turboremote",
+      "View a project's status with Turboremote",
+      () => {},
       turborepoCommand(status)
     )
     .command(
-      "tokens list",
-      "List personal access tokens",
+      "tokens",
+      "List access tokens",
+      () => {},
       turborepoCommand(tokensList)
     )
     .command(
-      "tokens create",
-      "Create a personal access token for CI",
+      "tokens:create",
+      "Create an access token (for CI, etc)",
+      () => {},
       turborepoCommand(tokensCreate)
     )
-    // .command("tokens delete", "Remove a personal access token", logOut)
-    // .command("teams list", "List teams", logOut)
-    // .command("teams rename", "Rename a team", logOut)
-    // .command("teams invite", "Invite a member to a team", logOut)
-    // .command("teams revoke", "Revoke a member from a team", logOut)
-    // .command("usage", "View your usage of Turboremote", logOut)
+    .command(
+      "tokens:delete",
+      "Delete an access token",
+      () => {},
+      turborepoCommand(tokensDelete)
+    )
+    .command(
+      "teams",
+      "List teams that you're a member of",
+      () => {},
+      turborepoCommand(teamsList)
+    )
+    .command(
+      "teams:create",
+      "Create a team",
+      () => {},
+      turborepoCommand(teamsCreate)
+    )
+    .command(
+      "members",
+      "List members of a team",
+      () => {},
+      turborepoCommand(teamsListMembers)
+    )
+    .command(
+      "members:add",
+      "Add a member to a team",
+      () => {},
+      turborepoCommand(teamsAddMember)
+    )
+    .command(
+      "members:remove",
+      "Remove a member from a team",
+      () => {},
+      turborepoCommand(teamsRemoveMember)
+    )
     .help().argv;
+
+  if (argv._.length === 0) {
+    yargs.showHelp();
+  }
 })();

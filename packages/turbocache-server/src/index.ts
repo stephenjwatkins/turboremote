@@ -27,6 +27,8 @@ const fastify = createFastify({
   logger: getLogger(),
 });
 
+fastify.register(require("@fastify/sensible"));
+
 fastify.addContentTypeParser(
   "application/octet-stream",
   function (_request, _payload, done) {
@@ -60,12 +62,12 @@ fastify.route({
   handler: async (request, reply) => {
     const { id: loginId } = request.params as { id: string };
 
-    const account = await db.fetchAccountFromLogin({ id: loginId });
-    if (!account) {
+    const accountAndToken = await db.fetchAccountFromLogin({ id: loginId });
+    if (!accountAndToken) {
       return reply.code(404).send();
     }
 
-    return reply.code(200).send(account);
+    return reply.code(200).send(accountAndToken);
   },
 });
 
@@ -130,9 +132,9 @@ fastify.route({
     }
 
     const { name } = request.body as { name: string };
-    const teamWithToken = await db.createTeam(token, { name });
+    const team = await db.createTeam(token, { name });
 
-    return reply.send(teamWithToken);
+    return reply.send(team);
   },
 });
 
@@ -155,6 +157,143 @@ fastify.route({
 
     const tokens = await db.fetchTokens(token);
     return reply.send(tokens);
+  },
+});
+
+fastify.route({
+  url: "/tokens",
+  method: "POST",
+  handler: async (request, reply) => {
+    const { authorization } = request.headers;
+    if (
+      !authorization ||
+      authorization.length === 0 ||
+      !authorization.includes("Bearer ")
+    ) {
+      return reply.code(403).send();
+    }
+    const [_type, token] = authorization.split(" ");
+    if (!token) {
+      return reply.code(403).send();
+    }
+
+    const { name, teamId } = request.body as { name: string; teamId: number };
+    const createdToken = await db.createToken(token, { name, teamId });
+    return reply.send(createdToken);
+  },
+});
+
+fastify.route({
+  url: "/tokens/:tokenId",
+  method: "DELETE",
+  handler: async (request, reply) => {
+    const { authorization } = request.headers;
+    if (
+      !authorization ||
+      authorization.length === 0 ||
+      !authorization.includes("Bearer ")
+    ) {
+      return reply.code(403).send();
+    }
+    const [_type, token] = authorization.split(" ");
+    if (!token) {
+      return reply.code(403).send();
+    }
+
+    const { tokenId } = request.params as { tokenId: number };
+    await db.deleteToken(token, { tokenId });
+    return reply.code(200).send({});
+  },
+});
+
+fastify.route({
+  url: "/memberships",
+  method: "GET",
+  handler: async (request, reply) => {
+    const { authorization } = request.headers;
+    if (
+      !authorization ||
+      authorization.length === 0 ||
+      !authorization.includes("Bearer ")
+    ) {
+      return reply.code(403).send();
+    }
+    const [_type, token] = authorization.split(" ");
+    if (!token) {
+      return reply.code(403).send();
+    }
+
+    const memberships = await db.fetchMemberships(token);
+    return reply.send(memberships);
+  },
+});
+
+fastify.route({
+  url: "/memberships",
+  method: "POST",
+  handler: async (request, reply) => {
+    const { authorization } = request.headers;
+    if (
+      !authorization ||
+      authorization.length === 0 ||
+      !authorization.includes("Bearer ")
+    ) {
+      return reply.code(403).send();
+    }
+    const [_type, token] = authorization.split(" ");
+    if (!token) {
+      return reply.code(403).send();
+    }
+
+    const { teamId, email } = request.body as { teamId: number; email: string };
+    const invite = await db.addTeamMember(token, { teamId, email });
+    return reply.code(201).send(invite);
+  },
+});
+
+fastify.route({
+  url: "/team/:teamId/memberships",
+  method: "GET",
+  handler: async (request, reply) => {
+    const { authorization } = request.headers;
+    if (
+      !authorization ||
+      authorization.length === 0 ||
+      !authorization.includes("Bearer ")
+    ) {
+      return reply.code(403).send();
+    }
+    const [_type, token] = authorization.split(" ");
+    if (!token) {
+      return reply.code(403).send();
+    }
+
+    const { teamId } = request.params as { teamId: number };
+    const memberships = await db.fetchTeamMemberships(token, { teamId });
+    return reply.send(memberships);
+  },
+});
+
+fastify.route({
+  url: "/memberships/:memberId",
+  method: "DELETE",
+  handler: async (request, reply) => {
+    const { authorization } = request.headers;
+    if (
+      !authorization ||
+      authorization.length === 0 ||
+      !authorization.includes("Bearer ")
+    ) {
+      return reply.code(403).send();
+    }
+    const [_type, token] = authorization.split(" ");
+    if (!token) {
+      return reply.code(403).send();
+    }
+
+    const { memberId } = request.params as { memberId: number };
+    await db.removeTeamMember(token, { memberId });
+    return reply.code(200).send({});
   },
 });
 

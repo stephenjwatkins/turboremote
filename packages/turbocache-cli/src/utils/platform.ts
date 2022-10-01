@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs, { PathLike, PathOrFileDescriptor } from "fs";
 
 export function fileExists(path: string) {
   try {
@@ -19,4 +19,13 @@ export function safelyRemoveFile(path: string) {
   if (fileExists(path)) {
     fs.unlinkSync(path);
   }
+}
+
+export function safelyWriteFile(
+  dir: PathLike,
+  path: PathOrFileDescriptor,
+  data: string | NodeJS.ArrayBufferView
+) {
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path, data);
 }

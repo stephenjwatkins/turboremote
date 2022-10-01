@@ -39,10 +39,10 @@ export function home() {
         Welcome to Turboremote!
       </h1>
       <p>
-        We are a standalone Remote Cache provider for Turborepo.
+        Turboremote is a standalone Remote Cache provider for Turborepo.
       </p>
       <p>
-        To get started, simply run <code>npx turboremote link</code> in a Turborepo project.
+        Run <code>npx turboremote link</code> in a Turborepo project to get started. Be connected in less than a minute.
       </p>`,
   });
 }

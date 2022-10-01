@@ -22,6 +22,17 @@ export type Team = {
   created_at: string;
 };
 
+export type Membership = {
+  id: number;
+  role: string;
+  account: Account;
+  team: Team;
+};
+
+export type Invite = {
+  accepted_at: string | null;
+};
+
 export type Token = {
   id: number;
   name: string;
@@ -30,8 +41,8 @@ export type Token = {
   teamName: string;
 };
 
-export type TeamWithToken = {
-  team: Team;
+export type AccountWithToken = {
+  account: Account;
   token: Token;
 };
 
@@ -48,7 +59,7 @@ export class ApiError extends Error {
 
 export async function makeApiRequest(path: string, init: RequestInit = {}) {
   const { headers = {} } = init;
-  const response = await fetch(process.env.API_HOST + path, {
+  const response = await fetch(process.env.API_URL + path, {
     ...init,
     headers: {
       Accept: "application/json",

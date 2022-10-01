@@ -1,7 +1,12 @@
 import fs from "fs";
 import path from "path";
 import { baseDirs } from "directories-js";
-import { fileExists, safelyRemoveFile, safelyRenameFile } from "./platform";
+import {
+  fileExists,
+  safelyRemoveFile,
+  safelyRenameFile,
+  safelyWriteFile,
+} from "./platform";
 
 export type TurborepoConfig = {
   apiUrl: string;
@@ -16,6 +21,11 @@ export function turborepoCommand(command: () => {}) {
   };
 }
 
+export async function hasPreviousConfig() {
+  const paths = getTurborepoPaths();
+  return fileExists(paths.prevProjectConfigFile);
+}
+
 export async function isTurboremoteLinked() {
   const paths = getTurborepoPaths();
 
@@ -26,7 +36,7 @@ export async function isTurboremoteLinked() {
   try {
     const data = fs.readFileSync(paths.projectConfigFile, "utf-8");
     const json = JSON.parse(data);
-    return json.apiurl === process.env.API_HOST;
+    return json.apiurl === process.env.API_URL;
   } catch {
     return false;
   }
@@ -60,15 +70,18 @@ export async function saveConfigToTurborepo({
 }: TurborepoConfig) {
   const paths = getTurborepoPaths();
 
-  safelyRenameFile(paths.projectConfigFile, paths.prevProjectConfigFile);
-  safelyRenameFile(paths.userConfigFile, paths.prevUserConfigFile);
+  if (!isTurboremoteLinked()) {
+    safelyRenameFile(paths.projectConfigFile, paths.prevProjectConfigFile);
+    safelyRenameFile(paths.userConfigFile, paths.prevUserConfigFile);
+  }
 
-  fs.writeFileSync(
+  safelyWriteFile(
+    paths.projectDir,
     paths.projectConfigFile,
     JSON.stringify({ apiurl: apiUrl, teamid: `team_${teamIdToken}` }, null, 2)
   );
-
-  fs.writeFileSync(
+  safelyWriteFile(
+    paths.userDir,
     paths.userConfigFile,
     JSON.stringify({ token: teamAccessToken }, null, 2)
   );
@@ -134,6 +147,8 @@ export function getTurborepoPaths() {
   );
 
   return {
+    projectDir,
+    userDir,
     projectConfigFile,
     userConfigFile,
     prevProjectConfigFile,

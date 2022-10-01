@@ -27,7 +27,7 @@ export async function tokensCreate() {
       {
         name: "team",
         type: "list",
-        message: "What team do you want to link to this repo?",
+        message: "What team do you want to scope to this token?",
         choices: teams.map((team) => ({
           name: team.name,
           value: team.id,
@@ -39,13 +39,19 @@ export async function tokensCreate() {
   const team = teams.find((t) => t.id === teamId) as Team;
 
   const createSpinner = wait("Saving token");
-  const paToken = await createToken(token, { name, team: teamId });
-  createSpinner.succeed("Turboremote successfully created token.");
+  const paToken = await createToken(token, { name, teamId });
+  createSpinner.succeed(
+    `Turboremote successfully created token for ${team.name}: ${paToken.hash}`
+  );
 
   console.log("");
   printTurborepoConfig({
-    apiUrl: process.env.API_HOST as string,
-    teamToken: team.hash,
-    userToken: paToken.hash,
+    apiUrl: process.env.API_URL as string,
+    teamIdToken: team.hash,
+    teamAccessToken: paToken.hash,
   });
+  console.log("");
+  console.log(
+    "Save your credentials in a secure place--you won't be able to see them again!"
+  );
 }

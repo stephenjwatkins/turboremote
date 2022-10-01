@@ -6,8 +6,8 @@
     "turboremote": "dist/index.js"
   },
   "scripts": {
-    "dev": "tsup --watch --env.API_HOST \"http://localhost:3000\"",
-    "build": "tsup --env.API_HOST \"https://turboremote.org/api\"",
+    "dev": "tsup --watch --env.API_URL \"http://localhost:3000\"",
+    "build": "tsup --env.API_URL \"https://turboremote.org/api\"",
     "check-types": "tsc --noEmit"
   },
   "keywords": [
@@ -18,6 +18,7 @@
   ],
   "author": "Stephen Watkins (stjowa@gmail.com)",
   "dependencies": {
+    "chalk": "4",
     "cli-spinners": "^2.7.0",
     "configstore": "^5.0.0",
     "directories-js": "^0.1.0",

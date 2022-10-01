@@ -1,12 +1,13 @@
-import { ApiError, makeApiRequest } from "./utils";
+import { sleep } from "../utils/promise";
 import type {
-  InitiateLoginRequest,
   CheckActivationRequest,
-  Account,
+  InitiateLoginRequest,
+  Invite,
+  Membership,
   Team,
   Token,
-  TeamWithToken,
 } from "./utils";
+import { AccountWithToken, ApiError, makeApiRequest } from "./utils";
 
 export async function initiateLogin({
   email,
@@ -23,7 +24,7 @@ export async function initiateLogin({
 
 export async function checkLogin({
   activationId,
-}: CheckActivationRequest): Promise<Account | null> {
+}: CheckActivationRequest): Promise<AccountWithToken | null> {
   try {
     return await makeApiRequest(`/activations/${activationId}`, {
       method: "GET",
@@ -33,6 +34,21 @@ export async function checkLogin({
       return null;
     }
     throw error;
+  }
+}
+
+export async function pollLogin({ activationId }: CheckActivationRequest) {
+  try {
+    let accountWithToken = await checkLogin({ activationId });
+    let count = 1;
+    while (!accountWithToken && count < 100) {
+      await sleep(3000);
+      accountWithToken = await checkLogin({ activationId });
+      count++;
+    }
+    return accountWithToken;
+  } catch (error) {
+    return null;
   }
 }
 
@@ -48,7 +64,7 @@ export async function fetchTeams(token: string): Promise<Team[]> {
 export async function createTeam(
   token: string,
   { name }: { name: string }
-): Promise<TeamWithToken> {
+): Promise<Team> {
   return await makeApiRequest("/teams", {
     method: "POST",
     headers: {
@@ -70,7 +86,7 @@ export async function fetchTokens(token: string): Promise<Token[]> {
 
 export async function createToken(
   token: string,
-  { name, team }: { name: string; team: number }
+  { name, teamId }: { name: string; teamId: number }
 ): Promise<Team> {
   return await makeApiRequest("/tokens", {
     method: "POST",
@@ -78,6 +94,65 @@ export async function createToken(
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name, team }),
+    body: JSON.stringify({ name, teamId }),
+  });
+}
+
+export async function deleteToken(
+  token: string,
+  { tokenId }: { tokenId: number }
+): Promise<Team> {
+  return await makeApiRequest(`/tokens/${tokenId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function fetchMemberships(token: string): Promise<Membership[]> {
+  return await makeApiRequest("/memberships", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function addTeamMember(
+  token: string,
+  { teamId, email }: { teamId: number; email: string }
+): Promise<Invite> {
+  return await makeApiRequest("/memberships", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ teamId, email }),
+  });
+}
+
+export async function fetchTeamMemberships(
+  token: string,
+  { teamId }: { teamId: number }
+): Promise<Membership[]> {
+  return await makeApiRequest(`/team/${teamId}/memberships`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function removeTeamMember(
+  token: string,
+  { memberId }: { memberId: number }
+) {
+  return await makeApiRequest(`/memberships/${memberId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 }

@@ -10,6 +10,11 @@ export async function sendEmail(
   params: ICourierSendParameters | ICourierSendMessageParameters,
   config?: ICourierSendConfig | undefined
 ) {
+  if (!process.env.COURIER_AUTH_TOKEN) {
+    console.log("Sent email:");
+    console.log(JSON.stringify(params));
+    return;
+  }
   const courier = CourierClient({
     authorizationToken: process.env.COURIER_AUTH_TOKEN,
   });

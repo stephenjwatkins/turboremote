@@ -1,8 +1,7 @@
 import Configstore from "configstore";
 import inquirer from "inquirer";
-import { checkLogin, initiateLogin } from "../api";
+import { initiateLogin, pollLogin } from "../api";
 import { wait } from "../utils/console";
-import { sleep } from "../utils/promise";
 import { isValidEmail } from "../utils/validation";
 
 export async function runTokenFlow() {
@@ -19,30 +18,39 @@ export async function runTokenFlow() {
   ]);
 
   console.log("");
+  let activationId;
   const sendSpinner = wait("Sending email.");
-  const activationId = await initiateLogin({ email });
-  sendSpinner.succeed("Check your inbox!");
-  console.log(`We sent an activation link to ${email}.`);
+  try {
+    activationId = await initiateLogin({ email });
+    sendSpinner.succeed("Check your inbox.");
+    console.log(`  We sent an activation link to ${email}.`);
+  } catch (error) {
+    sendSpinner.fail(`Whoops—unable to send an activation link to ${email}.`);
+    console.log("  Try running the command again.");
+    console.log(
+      "  If the problem continues, email us at help@turboremote.org."
+    );
+    console.log("");
+    process.exit(1);
+  }
 
   console.log("");
   const activationSpinner = wait("Open the link to continue.");
+  const accountWithToken = await pollLogin({ activationId });
 
-  let account = await checkLogin({ activationId });
-  let count = 1;
-  while (!account && count < 100) {
-    await sleep(3000);
-    account = await checkLogin({ activationId });
-    count++;
-  }
-
-  if (account) {
-    setToken(account.hash);
+  if (accountWithToken) {
+    setToken(accountWithToken.token.hash);
     activationSpinner.succeed("Got it!");
-    console.log(`${email} successfully logged in.`);
+    console.log(`  ${email} successfully logged in.`);
+    console.log("");
   } else {
-    activationSpinner.fail("Unable to log in. Try running the command again.");
-    console.log("Unable to log in. Try running the command again.");
-    process.exit();
+    activationSpinner.fail("Whoops—unable to log in.");
+    console.log("  Try running the command again.");
+    console.log(
+      "  If the problem continues, email us at help@turboremote.org."
+    );
+    console.log("");
+    process.exit(1);
   }
 }
 
@@ -51,8 +59,7 @@ export async function acquireToken() {
     return getToken();
   }
 
-  console.log("First let's connect you to Turboremote.");
-  console.log("");
+  console.log("  First let's connect you to Turboremote.");
 
   await runTokenFlow();
   return getToken();

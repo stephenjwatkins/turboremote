@@ -13,16 +13,16 @@ export function wait(text: string) {
 
 export function printTurborepoConfig({
   apiUrl,
-  teamToken,
-  userToken,
+  teamIdToken,
+  teamAccessToken,
 }: TurborepoConfig) {
   console.log("Usage with command line flags:");
   console.log(
-    `  turbo run build --api=${apiUrl} --team=${teamToken} --token=${userToken}`
+    `  turbo run build --api=${apiUrl} --team=${teamIdToken} --token=${teamAccessToken}`
   );
   console.log("");
   console.log("Usage with environment variables:");
   console.log(
-    `  TURBO_TOKEN=${userToken} TURBO_TEAM=${teamToken} turbo run build --api=${apiUrl}`
+    `  TURBO_TOKEN=${teamAccessToken} TURBO_TEAM=${teamIdToken} turbo run build --api=${apiUrl}`
   );
 }

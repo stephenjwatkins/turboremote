@@ -11,5 +11,5 @@ export function isValidTeamName(name: string) {
 }
 
 export function isValidTokenName(name: string) {
-  return name.length > 0;
+  return name.length > 0 && name !== "Turboremote CLI";
 }
