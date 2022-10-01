@@ -87,7 +87,7 @@ export async function fetchTokens(token: string): Promise<Token[]> {
 export async function createToken(
   token: string,
   { name, teamId }: { name: string; teamId: number }
-): Promise<Team> {
+): Promise<Token> {
   return await makeApiRequest("/tokens", {
     method: "POST",
     headers: {

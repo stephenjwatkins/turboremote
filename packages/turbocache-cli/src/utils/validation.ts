@@ -10,6 +10,7 @@ export function isValidTeamName(name: string) {
   return name.length > 0;
 }
 
+export const RESERVED_TOKEN_NAMES = ["Turboremote CLI"];
 export function isValidTokenName(name: string) {
-  return name.length > 0 && name !== "Turboremote CLI";
+  return name.length > 0 && !RESERVED_TOKEN_NAMES.includes(name);
 }
