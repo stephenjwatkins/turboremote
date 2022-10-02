@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import inquirer from "inquirer";
 import {
   fetchMemberships,
@@ -6,26 +7,36 @@ import {
 } from "../api";
 import { Membership } from "../api/utils";
 import { wait } from "../utils/console";
+import { sleep } from "../utils/promise";
+import { getGreeting } from "../utils/time";
 import { acquireToken } from "../utils/token";
 
 export async function membersRemove() {
   console.log("");
+  console.log("  " + getGreeting());
+  console.log("  Let's remove a member from a team on Turboremote.");
+  console.log("");
 
   const token = await acquireToken();
-
-  const spinner = wait("Loading teams");
+  const initialSpinner = wait("Loading teams from Turboremote.");
   const memberships = await fetchMemberships(token);
   const ownerMemberships = memberships.filter((m) => m.role === "owner");
-  spinner.succeed("Loaded teams");
+  await sleep(2500);
+  initialSpinner.succeed("Done!");
+  console.log("  Teams loaded from Turboremote.");
 
   if (ownerMemberships.length === 0) {
-    console.log("Looks like you aren't an owner of any team.");
     console.log("");
-    console.log("Create a team with:");
-    console.log("npx turboremote teams-create");
+    console.log("  Looks like you aren't an owner of any team.");
+    console.log("  Adding members requires an ownership role.");
+    console.log("");
+    console.log("  To create a team, run:");
+    console.log(chalk.bold("  npx turboremote teams:create"));
+    console.log("");
     return;
   }
 
+  console.log("");
   const { teamId }: { teamId: number } = await inquirer.prompt([
     {
       name: "teamId",
@@ -39,6 +50,9 @@ export async function membersRemove() {
     },
   ]);
 
+  const team = (
+    ownerMemberships.find((m) => m.team.id === teamId) as Membership
+  ).team;
   const yourMembership = memberships.find(
     (m) => m.team.id === teamId
   ) as Membership;
@@ -48,11 +62,15 @@ export async function membersRemove() {
   );
 
   if (teamMemberships.length === 0) {
-    console.log("There aren't any members available to remove for this team.");
-    console.log("You can't remove yourself.");
+    console.log("");
+    console.log(
+      "  Looks like there aren't any members available to remove from this team."
+    );
+    console.log("");
     return;
   }
 
+  console.log("");
   const { memberId }: { memberId: number } = await inquirer.prompt([
     {
       name: "memberId",
@@ -68,11 +86,19 @@ export async function membersRemove() {
     },
   ]);
 
-  const memberToRemove = teamMemberships.find((tm) => tm.id === memberId);
+  const memberToRemove = teamMemberships.find(
+    (tm) => tm.id === memberId
+  ) as Membership;
 
-  const createSpinner = wait("Removing team member");
-  await removeTeamMember(token, { memberId });
-  createSpinner.succeed(
-    `Removed ${memberToRemove?.account.email} account as team member`
+  console.log("");
+  const createSpinner = wait(
+    "Got it. Removing member from team on Turboremote."
   );
+  await removeTeamMember(token, { memberId });
+  await sleep(2500);
+  createSpinner.succeed("Done!");
+  console.log(
+    `  ${memberToRemove.account.email} removed from ${team.name} on Turboremote.`
+  );
+  console.log("");
 }
