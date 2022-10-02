@@ -19,7 +19,7 @@ import { membersAdd } from "./commands/membersAdd";
 import { membersRemove } from "./commands/membersRemove";
 
 (async () => {
-  const argv = await yargs
+  await yargs
     .scriptName("")
     .usage("turboremote <cmd> [args]")
     .command(
@@ -100,9 +100,9 @@ import { membersRemove } from "./commands/membersRemove";
       () => {},
       turborepoCommand(membersRemove)
     )
+    .showHelpOnFail(true)
+    .demandCommand()
+    .recommendCommands()
+    .strict()
     .help().argv;
-
-  if (argv._.length === 0) {
-    yargs.showHelp();
-  }
 })();
