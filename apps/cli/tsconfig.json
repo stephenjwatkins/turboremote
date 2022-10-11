@@ -1,0 +1,3 @@
+{
+  "extends": "@turboremote/tsconfig/library.json",
+}

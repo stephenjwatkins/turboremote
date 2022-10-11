@@ -1,0 +1,16 @@
+{
+  "extends": "./base.json",
+  "display": "TS Library",
+  "ts-node": {
+    "transpileOnly": true
+  },
+  "compilerOptions": {
+    "lib": ["ES2019"],
+    "target": "ES2019",
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "outDir": "dist",
+    "allowJs": false,
+    "typeRoots": ["./typings"]
+  }
+}

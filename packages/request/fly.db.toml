@@ -1,0 +1,76 @@
+# fly.toml file generated for still-sunset-501-db on 2022-09-22T20:22:14-04:00
+
+app = "still-sunset-501-db"
+kill_signal = "SIGTERM"
+kill_timeout = 300
+processes = []
+
+[checks]
+  [checks.pg]
+    grace_period = "30s"
+    headers = []
+    interval = "15s"
+    method = "get"
+    path = "/flycheck/pg"
+    port = 5500
+    protocol = "http"
+    restart_limit = 0
+    timeout = "10s"
+    tls_skip_verify = false
+    type = "http"
+  [checks.role]
+    grace_period = "30s"
+    headers = []
+    interval = "15s"
+    method = "get"
+    path = "/flycheck/role"
+    port = 5500
+    protocol = "http"
+    restart_limit = 0
+    timeout = "10s"
+    tls_skip_verify = false
+    type = "http"
+  [checks.vm]
+    grace_period = "1s"
+    headers = []
+    interval = "1m"
+    method = "get"
+    path = "/flycheck/vm"
+    port = 5500
+    protocol = "http"
+    restart_limit = 0
+    timeout = "10s"
+    tls_skip_verify = false
+    type = "http"
+
+[env]
+  PRIMARY_REGION = "iad"
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = false
+  enable_consul = true
+  private_network = true
+
+[metrics]
+  path = "/metrics"
+  port = 9187
+
+[[mounts]]
+  destination = "/data"
+  encrypted = false
+  source = "pg_data"
+
+[[services]]
+  internal_port = 5432 # Postgres instance
+  protocol = "tcp"
+
+# Example of opening port 443 for secure connections
+[[services.ports]]
+  handlers = ["tls"]
+  port = 443
+
+# Example of opening port 10000 for insecure connections.
+[[services.ports]]
+  handlers = []
+  port = 10000
