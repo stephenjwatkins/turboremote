@@ -23,9 +23,29 @@ export async function sendLoginEmail({
   return await sendEmail({
     From: "hello@turboremote.org",
     To: email,
-    TemplateAlias: "turboremote-login-link",
+    TemplateAlias: "turboremote-sign-in",
     TemplateModel: {
       login_url: process.env.LOGIN_URL?.replace("<code>", hash),
+    },
+  });
+}
+
+export async function sendInviteEmail({
+  email,
+  isNewUser,
+  teamName,
+}: {
+  email: string;
+  isNewUser: boolean;
+  teamName: string;
+}) {
+  return await sendEmail({
+    From: "hello@turboremote.org",
+    To: email,
+    TemplateAlias: "turboremote-join-team",
+    TemplateModel: {
+      team_name: teamName,
+      is_new_user: isNewUser,
     },
   });
 }

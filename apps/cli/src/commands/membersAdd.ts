@@ -57,11 +57,9 @@ export async function membersAdd() {
   const team = (
     ownerMemberships.find((m) => m.team.id === teamId) as Membership
   ).team;
+  console.log("");
+  const createSpinner = wait("Got it. Saving new team member to Turboremote.");
   try {
-    console.log("");
-    const createSpinner = wait(
-      "Got it. Saving new team member to Turboremote."
-    );
     const invite = await addTeamMember(token, { teamId, email });
     await sleep(2500);
     createSpinner.succeed("Done!");
@@ -72,6 +70,7 @@ export async function membersAdd() {
     }
     console.log("");
   } catch {
+    createSpinner.fail("Whoops—unable to add member.");
     console.log("");
     console.log(
       `  Looks like there was a problem adding ${email} to ${team.name}.`

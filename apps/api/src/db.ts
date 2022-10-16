@@ -311,6 +311,12 @@ export async function addTeamMember(
     .where("accounts.email", email)
     .first();
 
+  const team = await trx("teams").where("id", teamId).first("teams.*");
+
+  if (!team) {
+    throw new Error("Team doesn't exist");
+  }
+
   // if so, add them directly as a member
   // log the invite as well
   if (invitedAccount) {
@@ -331,11 +337,20 @@ export async function addTeamMember(
         .returning("invites.*")
     ).map(mapObjectsWithHashToBase64());
     await commitTransaction(trx);
-    return invite;
+    return { invite, team };
   }
 
   // if not, create an invite for them to be consumed when they create
   // their account
+
+  // expire existing invites
+  await trx("invites")
+    .whereNull("accepted_at")
+    .where("email", email)
+    .where("team_id", teamId)
+    .update({ accepted_at: new Date() });
+
+  // create new invite
   const [invite] = (
     await trx("invites")
       .insert({
@@ -348,7 +363,7 @@ export async function addTeamMember(
 
   await commitTransaction(trx);
 
-  return invite;
+  return { invite, team };
 }
 
 export async function fetchTeamMemberships(

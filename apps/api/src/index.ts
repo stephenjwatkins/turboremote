@@ -197,7 +197,14 @@ fastify.route({
     }
 
     const { teamId, email } = request.body as { teamId: number; email: string };
-    const invite = await db.addTeamMember(token, { teamId, email });
+    const { invite, team } = await db.addTeamMember(token, { teamId, email });
+
+    await notifications.sendInviteEmail({
+      email,
+      teamName: team.name,
+      isNewUser: !invite.accepted_at,
+    });
+
     return reply.code(201).send(invite);
   },
 });
