@@ -12,7 +12,9 @@ import {
   getMetadataHeaders,
   parseFetchRequest,
   parsePutRequest,
+  parseRequest,
 } from "./request";
+import { ArtifactEvent } from "./index.d";
 
 const store = process.env.STORE === "s3" ? s3Store : localStore;
 
@@ -27,15 +29,47 @@ fastify.addContentTypeParser(
   }
 );
 
-fastify.post("/v8/artifacts/events", (_request, reply) => {
-  reply.code(200).send({});
+fastify.route({
+  url: "/v8/artifacts/events",
+  method: "POST",
+  handler: async (request, reply) => {
+    const { teamId, token } = parseRequest(request);
+
+    if (!token) {
+      return reply.code(403).send({
+        error: { message: "Invalid token" },
+      });
+    }
+
+    if (!teamId) {
+      return reply.code(403).send({
+        error: { message: "Invalid team" },
+      });
+    }
+
+    try {
+      await db.verifyRequest({ token, teamId });
+    } catch (error) {
+      console.error(error);
+      if ((error as Error).message.startsWith("Unauthorized")) {
+        return reply.code(403).send({
+          error: { message: "Unauthorized" },
+        });
+      }
+      return reply.code(500).send({});
+    }
+
+    const events = request.body as ArtifactEvent[];
+    await db.trackArtifactEvents(token, { events });
+
+    reply.code(200).send({});
+  },
 });
 
 fastify.route({
   url: "/v8/artifacts/:artifactId",
   method: ["GET", "OPTIONS"],
   handler: async (request, reply) => {
-    console.log("GET", request.headers);
     const { artifactId, teamId, token } = parseFetchRequest(request);
 
     if (request.method === "OPTIONS") {
@@ -88,6 +122,12 @@ fastify.route({
 
       const metadata = await store.readMetadata(artifactPath);
       const stream = store.createReadStream(artifactPath);
+
+      await db.trackGetArtifact(token, {
+        hash: artifactId,
+        teamHash: teamId,
+      });
+
       return reply
         .headers({
           ...getAuthHeaders(token),
@@ -95,6 +135,7 @@ fastify.route({
         })
         .send(stream);
     } catch (error) {
+      console.error(error);
       return reply
         .headers(getAuthHeaders(token))
         .code(400)
@@ -105,8 +146,7 @@ fastify.route({
 
 fastify.put("/v8/artifacts/:artifactId", {
   handler: async (request, reply) => {
-    console.log("PUT", request.headers);
-    const { artifactId, teamId, token, duration, tag } =
+    const { artifactId, teamId, token, duration, size, tag } =
       parsePutRequest(request);
 
     if (!token) {
@@ -140,11 +180,21 @@ fastify.put("/v8/artifacts/:artifactId", {
       const writeStream = store.createWriteStream(artifactPath);
       await stream.pump(request.raw, writeStream);
 
+      const sizeInBytes = parseInt(size, 10);
+      const durationInMs = parseInt(duration, 10);
+      await db.trackPutArtifact(token, {
+        hash: artifactId,
+        teamHash: teamId,
+        sizeInBytes,
+        durationInMs,
+      });
+
       return reply
         .headers(getAuthHeaders(token))
         .code(200)
         .send({ urls: [artifactPath] });
-    } catch (err) {
+    } catch (error) {
+      console.error(error);
       return reply
         .headers(getAuthHeaders(token))
         .code(400)
