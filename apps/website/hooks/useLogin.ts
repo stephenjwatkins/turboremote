@@ -1,4 +1,4 @@
-import { runPromiseForMinimumTime } from "@turboremote/request";
+import { ApiError, runPromiseForMinimumTime } from "@turboremote/request";
 import { useEffect, useState } from "react";
 import { createApi, createLoginOnce } from "../utils/api";
 
@@ -17,8 +17,12 @@ export const useLogin = () => {
       .then(() => {
         setLoginState("success");
       })
-      .catch(() => {
-        setLoginState("error");
+      .catch((e) => {
+        if (e instanceof ApiError && e.code === 404) {
+          setLoginState("error");
+        } else {
+          throw e;
+        }
       });
     return () => {};
   }, []);
