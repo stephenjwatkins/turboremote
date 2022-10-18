@@ -14,6 +14,7 @@ EXPOSE 8080
 
 ENV NODE_ENV production
 ENV LOGIN_URL https://turboremote.org/login?code=<code>
+ENV CORS_ORIGIN https://turboremote.org
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 apijs

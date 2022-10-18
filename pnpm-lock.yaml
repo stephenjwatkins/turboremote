@@ -9,6 +9,7 @@ importers:
     specifiers:
       '@fastify/cors': ^8.1.0
       '@fastify/sensible': ^5.1.1
+      '@sentry/node': ^7.15.0
       '@turboremote/lib': '*'
       '@turboremote/tsconfig': '*'
       '@types/node': ^18.7.16
@@ -25,6 +26,7 @@ importers:
     dependencies:
       '@fastify/cors': 8.1.0
       '@fastify/sensible': 5.1.1
+      '@sentry/node': 7.15.0
       '@turboremote/lib': link:../../packages/lib
       date-fns: 2.29.3
       dotenv: 16.0.3

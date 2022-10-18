@@ -1,5 +1,6 @@
 import { sub } from "date-fns";
 import { db, validations, encoding } from "@turboremote/lib";
+import { fastify } from "./server";
 
 const { connect, commitTransaction } = db;
 const {
@@ -9,6 +10,23 @@ const {
   uuidToBase64,
 } = encoding;
 const { sanitizeEmail } = validations;
+
+export async function fetchAccountFromToken(token: string) {
+  const knex = connect();
+
+  const account = await knex
+    .select("accounts.*")
+    .from("accounts")
+    .join("tokens", "tokens.account_id", "=", "accounts.id")
+    .where("tokens.hash", encoding.normalizeUuid(token))
+    .first();
+
+  if (!account) {
+    throw fastify.httpErrors.badRequest("Invalid token");
+  }
+
+  return account;
+}
 
 export async function createLogin({ email: _email }: { email: string }) {
   const knex = connect();
@@ -314,7 +332,7 @@ export async function addTeamMember(
   const team = await trx("teams").where("id", teamId).first("teams.*");
 
   if (!team) {
-    throw new Error("Team doesn't exist");
+    throw fastify.httpErrors.badRequest("Team not found");
   }
 
   // if so, add them directly as a member
@@ -442,11 +460,11 @@ export async function removeTeamMember(
     .first("memberships.*");
 
   if (accountMembership.role !== "owner") {
-    throw new Error("Only owners can remove members");
+    throw fastify.httpErrors.forbidden("Only owners can remove members");
   }
 
   if (accountMembership.id === membership.id) {
-    throw new Error("Can't remove yourself");
+    throw fastify.httpErrors.forbidden("You can't remove yourself");
   }
 
   await trx("memberships").where("id", memberId).delete();
