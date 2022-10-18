@@ -45,10 +45,13 @@ export const HomeScreen = () => {
         </VStack>
         <div>
           <div className={videoBoxBlack}>
-            <Video src="/link-video-dark-2.mp4" className={video} />
+            <Video src="/link-video-dark.mp4?v=20221017" className={video} />
           </div>
           <div className={videoBoxWhite}>
-            <Video src="/link-video-light-2.mp4" className={videoWhite} />
+            <Video
+              src="/link-video-light.mp4?v=20221017"
+              className={videoWhite}
+            />
             <div className={videoBoxWhiteBorder} />
           </div>
         </div>
