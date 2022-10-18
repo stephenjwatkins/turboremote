@@ -82,6 +82,7 @@ importers:
   apps/server:
     specifiers:
       '@fastify/sensible': ^5.1.1
+      '@sentry/node': ^7.15.0
       '@turboremote/lib': '*'
       '@turboremote/tsconfig': '*'
       '@types/node': ^18.7.16
@@ -102,6 +103,7 @@ importers:
       uuid-base64: ^1.0.0
     dependencies:
       '@fastify/sensible': 5.1.1
+      '@sentry/node': 7.15.0
       '@turboremote/lib': link:../../packages/lib
       aws-sdk: 2.1227.0
       date-fns: 2.29.3

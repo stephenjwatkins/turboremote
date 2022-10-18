@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@fastify/sensible": "^5.1.1",
+    "@sentry/node": "^7.15.0",
     "@turboremote/lib": "*",
     "aws-sdk": "^2.1217.0",
     "date-fns": "^2.29.3",

@@ -1,5 +1,6 @@
 import { db, encoding } from "@turboremote/lib";
 import type { ArtifactEvent } from "./index.d";
+import { fastify } from "./server";
 
 export async function verifyRequest({
   token,
@@ -20,7 +21,7 @@ export async function verifyRequest({
     .first();
 
   if (account.teamHash && account.teamHash !== teamUuid) {
-    throw new Error("Unauthorized team");
+    throw fastify.httpErrors.forbidden("Invalid team");
   }
 
   const memberships = await knex
@@ -34,7 +35,7 @@ export async function verifyRequest({
     .where("memberships.account_id", account.id);
 
   if (!memberships.some((m) => m.teamHash === teamUuid)) {
-    throw new Error("Unauthorized team");
+    throw fastify.httpErrors.forbidden("Invalid team");
   }
 }
 
