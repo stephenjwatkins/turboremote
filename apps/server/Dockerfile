@@ -14,6 +14,7 @@ EXPOSE 8080
 
 ENV NODE_ENV production
 ENV STORE s3
+ENV SENTRY_ENV production
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 serverjs
