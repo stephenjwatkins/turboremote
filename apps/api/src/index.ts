@@ -46,7 +46,6 @@ fastify.register((instance, opts, done) => {
     method: "GET",
     handler: async (request, reply) => {
       const { token } = request;
-      throw new Error("blah3");
       const teams = await db.fetchTeams(token);
       return reply.send(teams);
     },
