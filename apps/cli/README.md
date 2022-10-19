@@ -1,8 +1,8 @@
-<p align="center">
-  <img width="340" alt="Turboremote logo" src="https://turboremote.org/logo.svg?v=20221019">
+<p align="center" style="margin-bottom:24px;margin-top:48px;">
+  <img width="320" alt="Turboremote logo" src="https://turboremote.org/logo.svg?v=20221019">
 </p>
 
-<p align="center">
+<p align="center" style="margin-bottom:48px;">
   <a aria-label="npm version" href="https://www.npmjs.com/package/turboremote">
     <img alt="" src="https://badgen.net/npm/v/turboremote">
   </a>
@@ -14,13 +14,13 @@
 
 Turboremote is a standalone, frictionless Remote Cache provider for Turborepo. You can be connected in less than a minute.
 
-To get started, run the below command at the root of your Turborepo:
+To get started, run the below command at the root of your Turborepo project:
 
 ```sh
 npx turboremote link
 ```
 
-You'll be asked for your email address and a team name to associate with your account. After that, Turboremote will seamlessly connect with your Turborepo project.
+You'll be asked for your email address and a team name to associate with your account. After that, Turboremote will seamlessly connect.
 
 To view the full list of available commands, run:
 
@@ -28,7 +28,7 @@ To view the full list of available commands, run:
 npx turboremote --help
 ```
 
-You can restore previous Remote Cache settings, manage team members, create access tokens for CI, and more.
+You can manage team members, create access tokens for CI, restore previous Remote Cache settings, and more.
 
 ## Community
 

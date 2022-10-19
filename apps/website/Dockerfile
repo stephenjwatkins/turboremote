@@ -18,6 +18,9 @@ WORKDIR /app
 
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_PUBLIC_API_URL="https://api.turboremote.org"
+ENV NEXT_PUBLIC_SENTRY_DSN="https://f1bc104e413443d5b798a1a218178c18@o4503995969241088.ingest.sentry.io/4503995974483968"
+ENV NEXT_PUBLIC_SENTRY_ENV="production"
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
