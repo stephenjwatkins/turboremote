@@ -13,7 +13,7 @@ export async function verifyRequest({
   const teamUuid = encoding.normalizeUuid(teamId.replace("team_", ""));
 
   const account = await knex
-    .select(["accounts.id as id", "teams.hash as teamHash"])
+    .select(["accounts.*", "teams.hash as teamHash"])
     .from("accounts")
     .join("tokens", "tokens.account_id", "=", "accounts.id")
     .leftJoin("teams", "tokens.team_id", "=", "teams.id")
@@ -37,6 +37,8 @@ export async function verifyRequest({
   if (!memberships.some((m) => m.teamHash === teamUuid)) {
     throw fastify.httpErrors.forbidden("Invalid team");
   }
+
+  return account;
 }
 
 export const getColumnFromArtifactEvent = (e: ArtifactEvent) => {

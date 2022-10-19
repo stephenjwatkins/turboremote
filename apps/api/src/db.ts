@@ -11,22 +11,7 @@ const {
 } = encoding;
 const { sanitizeEmail } = validations;
 
-export async function fetchAccountFromToken(token: string) {
-  const knex = connect();
-
-  const account = await knex
-    .select("accounts.*")
-    .from("accounts")
-    .join("tokens", "tokens.account_id", "=", "accounts.id")
-    .where("tokens.hash", encoding.normalizeUuid(token))
-    .first();
-
-  if (!account) {
-    throw fastify.httpErrors.badRequest("Invalid account for token");
-  }
-
-  return account;
-}
+export const fetchAccountFromToken = db.fetchAccountFromToken;
 
 export async function createLogin({ email: _email }: { email: string }) {
   const knex = connect();

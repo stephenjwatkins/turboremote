@@ -1,4 +1,5 @@
 import createKnex, { Knex } from "knex";
+import { normalizeUuid } from "./encoding";
 
 export type Id = string | number;
 
@@ -21,4 +22,15 @@ export async function commitTransaction(trx: Knex.Transaction) {
     await trx.rollback();
     throw error;
   }
+}
+
+export async function fetchAccountFromToken(token: string) {
+  const knex = connect();
+  const account = await knex
+    .select("accounts.*")
+    .from("accounts")
+    .join("tokens", "tokens.account_id", "=", "accounts.id")
+    .where("tokens.hash", normalizeUuid(token))
+    .first();
+  return account;
 }

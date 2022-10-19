@@ -1,7 +1,16 @@
 import fastifySensible from "@fastify/sensible";
 import { logging } from "@turboremote/lib";
 import createFastify from "fastify";
+import { parseRequest } from "./request";
 import { Sentry } from "./sentry";
+import * as db from "./db";
+declare module "fastify" {
+  interface FastifyRequest {
+    teamId: string;
+    token: string;
+    account: { id: number; email: string };
+  }
+}
 
 const fastify = createFastify({ logger: logging.getLogger() });
 
@@ -29,5 +38,27 @@ fastify.addContentTypeParser(
     done(null);
   }
 );
+
+fastify.decorateRequest("token", "");
+fastify.decorateRequest("teamId", "");
+fastify.decorateRequest("account", {});
+fastify.addHook("preHandler", async (request, _reply) => {
+  const { teamId, token } = parseRequest(request);
+  if (!token) {
+    throw fastify.httpErrors.forbidden("Invalid token");
+  }
+  if (!teamId) {
+    throw fastify.httpErrors.forbidden("Invalid team");
+  }
+  const account = await db.verifyRequest({ token, teamId });
+
+  request.token = token;
+  request.teamId = teamId;
+  request.account = account;
+});
+
+fastify.addHook("preHandler", async (request) => {
+  Sentry.setUser({ email: request.account.email });
+});
 
 export { fastify };

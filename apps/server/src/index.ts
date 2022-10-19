@@ -10,7 +10,6 @@ import {
   getMetadataHeaders,
   parseFetchRequest,
   parsePutRequest,
-  parseRequest,
 } from "./request";
 import { fastify } from "./server";
 import * as localStore from "./stores/local";
@@ -22,21 +21,9 @@ fastify.route({
   url: "/v8/artifacts/events",
   method: "POST",
   handler: async (request, reply) => {
-    const { teamId, token } = parseRequest(request);
-
-    if (!token) {
-      throw fastify.httpErrors.forbidden("Invalid token");
-    }
-
-    if (!teamId) {
-      throw fastify.httpErrors.forbidden("Invalid team");
-    }
-
-    await db.verifyRequest({ token, teamId });
-
+    const { token } = request;
     const events = request.body as ArtifactEvent[];
     await db.trackArtifactEvents(token, { events });
-
     reply.code(200).send({});
   },
 });
@@ -45,7 +32,8 @@ fastify.route({
   url: "/v8/artifacts/:artifactId",
   method: ["GET", "OPTIONS"],
   handler: async (request, reply) => {
-    const { artifactId, teamId, token } = parseFetchRequest(request);
+    const { teamId, token } = request;
+    const { artifactId } = parseFetchRequest(request);
 
     if (request.method === "OPTIONS") {
       return reply
@@ -59,16 +47,6 @@ fastify.route({
         .code(200)
         .send({});
     }
-
-    if (!token) {
-      throw fastify.httpErrors.forbidden("Invalid token");
-    }
-
-    if (!teamId) {
-      throw fastify.httpErrors.forbidden("Invalid team");
-    }
-
-    await db.verifyRequest({ token, teamId });
 
     const artifactPath = path.join(teamId, artifactId);
 
@@ -99,18 +77,8 @@ fastify.route({
 
 fastify.put("/v8/artifacts/:artifactId", {
   handler: async (request, reply) => {
-    const { artifactId, teamId, token, duration, size, tag } =
-      parsePutRequest(request);
-
-    if (!token) {
-      throw fastify.httpErrors.forbidden("Invalid token");
-    }
-
-    if (!teamId) {
-      throw fastify.httpErrors.forbidden("Invalid team");
-    }
-
-    await db.verifyRequest({ token, teamId });
+    const { teamId, token } = request;
+    const { artifactId, duration, size, tag } = parsePutRequest(request);
 
     const artifactPath = path.join(teamId, artifactId);
     await store.writeMetadata(artifactPath, { duration, tag });
