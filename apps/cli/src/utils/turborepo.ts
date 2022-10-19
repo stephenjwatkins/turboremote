@@ -17,7 +17,7 @@ export type TurborepoConfig = {
 export function turborepoCommand(command: () => {}) {
   return async () => {
     await ensureTurborepo();
-    command();
+    await command();
   };
 }
 

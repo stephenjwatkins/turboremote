@@ -16,8 +16,6 @@ declare module "fastify" {
 
 // Authenticated routes
 fastify.register((instance, opts, done) => {
-  instance.decorateRequest("token", "");
-  instance.decorateRequest("account", {});
   instance.addHook("preHandler", async (request, _reply) => {
     const { authorization } = request.headers;
     if (

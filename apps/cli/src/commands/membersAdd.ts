@@ -69,7 +69,7 @@ export async function membersAdd() {
       console.log(`  ${email} invited to ${team.name} on Turboremote.`);
     }
     console.log("");
-  } catch {
+  } catch (error) {
     createSpinner.fail("Whoops—unable to add member.");
     console.log("");
     console.log(
@@ -77,10 +77,6 @@ export async function membersAdd() {
     );
     console.log("  Ensure that the member is not already part of the team.");
     console.log("");
-    console.log("  Try running the command again.");
-    console.log(
-      "  If the problem continues, let us know at help@turboremote.org"
-    );
-    console.log("");
+    throw error;
   }
 }

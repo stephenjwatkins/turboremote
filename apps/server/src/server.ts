@@ -39,9 +39,6 @@ fastify.addContentTypeParser(
   }
 );
 
-fastify.decorateRequest("token", "");
-fastify.decorateRequest("teamId", "");
-fastify.decorateRequest("account", {});
 fastify.addHook("preHandler", async (request, _reply) => {
   const { teamId, token } = parseRequest(request);
   if (!token) {

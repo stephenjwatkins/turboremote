@@ -44,6 +44,7 @@ importers:
 
   apps/cli:
     specifiers:
+      '@sentry/node': ^7.15.0
       '@turboremote/tsconfig': '*'
       '@types/configstore': ^5.0.0
       '@types/inquirer': ^9.0.1
@@ -62,6 +63,7 @@ importers:
       typescript: ^4.8.3
       yargs: ^17.5.1
     dependencies:
+      '@sentry/node': 7.15.0
       chalk: 4.1.2
       cli-spinners: 2.7.0
       configstore: 5.0.1

@@ -2,6 +2,7 @@
 
 import yargs from "yargs";
 
+import { Sentry } from "./utils/sentry";
 import { turborepoCommand } from "./utils/turborepo";
 
 import { logIn } from "./commands/logIn";
@@ -104,5 +105,19 @@ import { membersRemove } from "./commands/membersRemove";
     .demandCommand()
     .recommendCommands()
     .strict()
-    .help().argv;
+    .help()
+    .fail(function (msg, err, yargs) {
+      if (err) {
+        Sentry.captureException(err);
+      }
+      console.log("");
+      console.log("Looks like we ran into an error.");
+      console.log("Try running the command again.");
+      console.log(
+        "If the problem persists, send us an email at hello@turboremote.org."
+      );
+      console.log("");
+      yargs.showHelp();
+      process.exit(1);
+    }).argv;
 })();

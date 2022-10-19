@@ -26,12 +26,7 @@ export async function runTokenFlow() {
     console.log(`  We sent an activation link to ${email}.`);
   } catch (error) {
     sendSpinner.fail(`Whoops—unable to send an activation link to ${email}.`);
-    console.log("  Try running the command again.");
-    console.log(
-      "  If the problem continues, email us at help@turboremote.org."
-    );
-    console.log("");
-    process.exit(1);
+    throw error;
   }
 
   console.log("");
@@ -45,12 +40,9 @@ export async function runTokenFlow() {
     console.log("");
   } else {
     activationSpinner.fail("Whoops—unable to log in.");
-    console.log("  Try running the command again.");
-    console.log(
-      "  If the problem continues, email us at help@turboremote.org."
+    throw new Error(
+      "Unable to login. No account with token successfully polled."
     );
-    console.log("");
-    process.exit(1);
   }
 }
 

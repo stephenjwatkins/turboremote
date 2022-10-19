@@ -8,8 +8,8 @@
     "turboremote": "dist/index.js"
   },
   "scripts": {
-    "dev": "tsup --watch --env.API_URL \"http://localhost:3001\" --env.SERVER_URL \"http://localhost:3000\"",
-    "build": "tsup --env.API_URL \"https://api.turboremote.org\" --env.SERVER_URL \"https://server.turboremote.org\"",
+    "dev": "tsup --watch --env.API_URL \"http://localhost:3001\" --env.SERVER_URL \"http://localhost:3000\" --env.SENTRY_DSN \"https://a6101771ff5e4eb395fe364de9571184@o4503995969241088.ingest.sentry.io/4504002292219904\" --env.SENTRY_ENV \"development\"",
+    "build": "tsup --env.API_URL \"https://api.turboremote.org\" --env.SERVER_URL \"https://server.turboremote.org\" --env.SENTRY_DSN \"https://a6101771ff5e4eb395fe364de9571184@o4503995969241088.ingest.sentry.io/4504002292219904\" --env.SENTRY_ENV \"production\"",
     "check-types": "tsc --noEmit",
     "prepublishOnly": "pnpm run build"
   },
@@ -21,6 +21,7 @@
   ],
   "author": "Stephen Watkins (stephen@turboremote.org)",
   "dependencies": {
+    "@sentry/node": "^7.15.0",
     "chalk": "4",
     "cli-spinners": "^2.7.0",
     "configstore": "^5.0.0",
