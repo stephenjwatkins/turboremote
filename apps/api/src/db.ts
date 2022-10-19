@@ -22,7 +22,7 @@ export async function fetchAccountFromToken(token: string) {
     .first();
 
   if (!account) {
-    throw fastify.httpErrors.badRequest("Invalid token");
+    throw fastify.httpErrors.badRequest("Invalid account for token");
   }
 
   return account;
