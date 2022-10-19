@@ -6,11 +6,38 @@ export const svg = style({
   height: "auto",
 });
 
-export const remotePath = style({
-  fill: "#bbb",
+export const primary = style({
+  fill: "#BF406A",
   "@media": {
     "(prefers-color-scheme: dark)": {
-      fill: "#999",
+      fill: "#BF406A",
+    },
+  },
+});
+
+export const gradient1 = style({
+  fill: "#862D4A",
+  "@media": {
+    "(prefers-color-scheme: dark)": {
+      fill: "#D27997",
+    },
+  },
+});
+
+export const gradient2 = style({
+  fill: "#4D192B",
+  "@media": {
+    "(prefers-color-scheme: dark)": {
+      fill: "#E5B3C4",
+    },
+  },
+});
+
+export const secondary = style({
+  fill: "#260D15",
+  "@media": {
+    "(prefers-color-scheme: dark)": {
+      fill: "#F9ECF0",
     },
   },
 });
