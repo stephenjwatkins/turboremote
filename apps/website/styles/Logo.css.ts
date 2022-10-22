@@ -7,37 +7,37 @@ export const svg = style({
 });
 
 export const primary = style({
-  fill: "#BF406A",
+  fill: "#BF404A",
   "@media": {
     "(prefers-color-scheme: dark)": {
-      fill: "#BF406A",
+      fill: "#C6535C",
     },
   },
 });
 
 export const gradient1 = style({
-  fill: "#862D4A",
+  fill: "#862D34",
   "@media": {
     "(prefers-color-scheme: dark)": {
-      fill: "#D27997",
+      fill: "#D27981",
     },
   },
 });
 
 export const gradient2 = style({
-  fill: "#4D192B",
+  fill: "#4D191E",
   "@media": {
     "(prefers-color-scheme: dark)": {
-      fill: "#E5B3C4",
+      fill: "#E5B3B7",
     },
   },
 });
 
 export const secondary = style({
-  fill: "#260D15",
+  fill: "#130607",
   "@media": {
     "(prefers-color-scheme: dark)": {
-      fill: "#F9ECF0",
+      fill: "#FCF7F8",
     },
   },
 });

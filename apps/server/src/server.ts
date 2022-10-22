@@ -9,6 +9,7 @@ declare module "fastify" {
     teamId: string;
     token: string;
     account: { id: number; email: string };
+    team: { id: number; name: string; role: "owner" | "guest"; hash: string };
   }
 }
 
@@ -47,11 +48,12 @@ fastify.addHook("preHandler", async (request, _reply) => {
   if (!teamId) {
     throw fastify.httpErrors.forbidden("Invalid team");
   }
-  const account = await db.verifyRequest({ token, teamId });
+  const { account, team } = await db.verifyRequest({ token, teamId });
 
   request.token = token;
   request.teamId = teamId;
   request.account = account;
+  request.team = team;
 });
 
 fastify.addHook("preHandler", async (request) => {

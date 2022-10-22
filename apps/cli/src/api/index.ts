@@ -6,6 +6,7 @@ import type {
   Membership,
   Team,
   Token,
+  Usage,
 } from "./utils";
 import { AccountWithToken, ApiError, makeApiRequest } from "./utils";
 
@@ -151,6 +152,15 @@ export async function removeTeamMember(
 ) {
   return await makeApiRequest(`/memberships/${memberId}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function fetchUsage(token: string): Promise<Usage[]> {
+  return await makeApiRequest("/usage", {
+    method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
     },

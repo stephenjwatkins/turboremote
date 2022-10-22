@@ -146,6 +146,16 @@ fastify.register((instance, opts, done) => {
     },
   });
 
+  instance.route({
+    url: "/usage",
+    method: "GET",
+    handler: async (request, reply) => {
+      const { token, account } = request;
+      const usage = await db.fetchUsage(token, { accountId: account.id });
+      return reply.code(200).send(usage);
+    },
+  });
+
   done();
 });
 

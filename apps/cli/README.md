@@ -1,14 +1,20 @@
-<p align="center" style="margin-bottom:24px;margin-top:48px;">
-  <img width="320" alt="Turboremote logo" src="https://turboremote.org/logo.svg?v=20221019">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<p align="center"">
+  <img width="320" alt="Turboremote logo" src="https://turboremote.org/logo.svg?v=2022102201">
 </p>
 
-<p align="center" style="margin-bottom:48px;">
+<p align="center">
   <a aria-label="npm version" href="https://www.npmjs.com/package/turboremote">
     <img alt="" src="https://badgen.net/npm/v/turboremote">
   </a>
 </p>
 
-![turbo-screenshot](https://turboremote.org/screenshot@2x.png?v=20221019)
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+![turbo-screenshot](https://turboremote.org/screenshot@2x.png?v=2022102201)
 
 ## Getting Started
 

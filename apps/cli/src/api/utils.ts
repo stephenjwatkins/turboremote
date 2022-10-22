@@ -41,6 +41,13 @@ export type Token = {
   teamName: string;
 };
 
+export type Usage = {
+  team_id: number;
+  type: string;
+  sum: string;
+  count: string;
+};
+
 export type AccountWithToken = {
   account: Account;
   token: Token;

@@ -21,9 +21,13 @@ fastify.route({
   url: "/v8/artifacts/events",
   method: "POST",
   handler: async (request, reply) => {
-    const { token } = request;
+    const { team, account } = request;
     const events = request.body as ArtifactEvent[];
-    await db.trackArtifactEvents(token, { events });
+    await db.trackArtifactEvents({
+      teamId: team.id,
+      accountId: account.id,
+      events,
+    });
     reply.code(200).send({});
   },
 });
@@ -32,7 +36,7 @@ fastify.route({
   url: "/v8/artifacts/:artifactId",
   method: ["GET", "OPTIONS"],
   handler: async (request, reply) => {
-    const { teamId, token } = request;
+    const { teamId, token, account, team } = request;
     const { artifactId } = parseFetchRequest(request);
 
     if (request.method === "OPTIONS") {
@@ -61,9 +65,10 @@ fastify.route({
     const metadata = await store.readMetadata(artifactPath);
     const stream = store.createReadStream(artifactPath);
 
-    await db.trackGetArtifact(token, {
+    await db.trackGetArtifact({
       hash: artifactId,
-      teamHash: teamId,
+      teamId: team.id,
+      accountId: account.id,
     });
 
     return reply
@@ -77,7 +82,7 @@ fastify.route({
 
 fastify.put("/v8/artifacts/:artifactId", {
   handler: async (request, reply) => {
-    const { teamId, token } = request;
+    const { teamId, token, team, account } = request;
     const { artifactId, duration, size, tag } = parsePutRequest(request);
 
     const artifactPath = path.join(teamId, artifactId);
@@ -88,11 +93,12 @@ fastify.put("/v8/artifacts/:artifactId", {
 
     const sizeInBytes = parseInt(size, 10);
     const durationInMs = parseInt(duration, 10);
-    await db.trackPutArtifact(token, {
+    await db.trackPutArtifact({
       hash: artifactId,
-      teamHash: teamId,
       sizeInBytes,
       durationInMs,
+      teamId: team.id,
+      accountId: account.id,
     });
 
     return reply

@@ -24,21 +24,18 @@ export async function verifyRequest({
     throw fastify.httpErrors.forbidden("Invalid team");
   }
 
-  const memberships = await knex
-    .select([
-      "memberships.id as membershipId",
-      "memberships.role as membershipRole",
-      "teams.hash as teamHash",
-    ])
+  const teamsOnAccount = await knex
+    .select(["memberships.role as role", "teams.*"])
     .from("memberships")
     .join("teams", "memberships.team_id", "=", "teams.id")
     .where("memberships.account_id", account.id);
 
-  if (!memberships.some((m) => m.teamHash === teamUuid)) {
+  const team = teamsOnAccount.find((t) => t.hash === teamUuid);
+  if (!team) {
     throw fastify.httpErrors.forbidden("Invalid team");
   }
 
-  return account;
+  return { account, team };
 }
 
 export const getColumnFromArtifactEvent = (e: ArtifactEvent) => {
@@ -55,18 +52,35 @@ export const getColumnFromArtifactEvent = (e: ArtifactEvent) => {
   return mapping[e.source][e.event];
 };
 
-export async function trackArtifactEvents(
-  tokenHash: string,
-  { events }: { events: ArtifactEvent[] }
-) {
+export async function trackArtifactEvents({
+  teamId,
+  accountId,
+  events,
+}: {
+  teamId: number;
+  accountId: number;
+  events: ArtifactEvent[];
+}) {
   const knex = db.connect();
   const trx = await knex.transaction();
 
   const responses = await Promise.all(
-    events.map((e) => {
-      return trx("artifacts")
-        .where("hash", e.hash)
-        .increment(getColumnFromArtifactEvent(e), 1);
+    events.map(async (e) => {
+      const artifact = await trx("artifacts")
+        .where({
+          hash: e.hash,
+          team_id: teamId,
+        })
+        .first();
+      if (artifact) {
+        await trx("events").insert({
+          artifact_id: artifact.id,
+          team_id: teamId,
+          account_id: accountId,
+          source: e.source,
+          type: e.event,
+        });
+      }
     })
   );
 
@@ -74,72 +88,68 @@ export async function trackArtifactEvents(
   return responses;
 }
 
-export async function trackPutArtifact(
-  tokenHash: string,
-  {
-    hash,
-    sizeInBytes,
-    durationInMs,
-    teamHash,
-  }: {
-    hash: string;
-    sizeInBytes: number;
-    durationInMs: number;
-    teamHash: string;
-  }
-) {
+export async function trackPutArtifact({
+  hash,
+  sizeInBytes,
+  durationInMs,
+  teamId,
+  accountId,
+}: {
+  hash: string;
+  sizeInBytes: number;
+  durationInMs: number;
+  teamId: number;
+  accountId: number;
+}) {
   const knex = db.connect();
   const trx = await knex.transaction();
 
-  const team = await trx
-    .select("teams.*")
-    .from("teams")
-    .where("hash", encoding.normalizeUuid(teamHash.replace("team_", "")))
-    .first();
-
-  const response = await trx("artifacts")
+  const [artifact] = await trx("artifacts")
     .insert({
       hash,
       size_in_bytes: sizeInBytes,
       duration_in_ms: durationInMs,
-      team_id: team.id,
+      team_id: teamId,
     })
-    .onConflict("hash")
-    .merge({
-      size_in_bytes: sizeInBytes,
-      duration_in_ms: durationInMs,
-      team_id: team.id,
-    });
+    .onConflict(["hash", "team_id"])
+    .merge(["size_in_bytes", "duration_in_ms"])
+    .returning("*");
 
-  await trx("artifacts").where("hash", hash).increment("upload_count", 1);
+  await trx("transfers").insert({
+    artifact_id: artifact.id,
+    team_id: teamId,
+    account_id: accountId,
+    type: "upload",
+  });
 
   await db.commitTransaction(trx);
-  return response;
+  return artifact;
 }
 
-export async function trackGetArtifact(
-  tokenHash: string,
-  {
-    hash,
-    teamHash,
-  }: {
-    hash: string;
-    teamHash: string;
-  }
-) {
+export async function trackGetArtifact({
+  hash,
+  teamId,
+  accountId,
+}: {
+  hash: string;
+  teamId: number;
+  accountId: number;
+}) {
   const knex = db.connect();
   const trx = await knex.transaction();
 
-  const team = await trx
-    .select("teams.*")
-    .from("teams")
-    .where("hash", encoding.normalizeUuid(teamHash.replace("team_", "")))
+  const artifact = await trx("artifacts")
+    .where({ hash: hash, team_id: teamId })
     .first();
 
-  await trx("artifacts")
-    .where("hash", hash)
-    .where("team_id", team.id)
-    .increment("download_count", 1);
+  if (artifact) {
+    await trx("transfers").insert({
+      artifact_id: artifact.id,
+      team_id: teamId,
+      account_id: accountId,
+      type: "download",
+    });
+  }
 
   await db.commitTransaction(trx);
 }

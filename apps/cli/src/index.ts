@@ -18,6 +18,7 @@ import { teamsCreate } from "./commands/teamsCreate";
 import { membersList } from "./commands/membersList";
 import { membersAdd } from "./commands/membersAdd";
 import { membersRemove } from "./commands/membersRemove";
+import { usage } from "./commands/usage";
 
 (async () => {
   await yargs
@@ -52,6 +53,12 @@ import { membersRemove } from "./commands/membersRemove";
       "View a project's status with Turboremote",
       () => {},
       turborepoCommand(status)
+    )
+    .command(
+      "usage",
+      "Display current month's usage",
+      () => {},
+      turborepoCommand(usage)
     )
     .command(
       "tokens",
@@ -109,6 +116,9 @@ import { membersRemove } from "./commands/membersRemove";
     .fail(function (msg, err, yargs) {
       if (err) {
         Sentry.captureException(err);
+        if (process.env.SENTRY_ENV === "development") {
+          console.error(err);
+        }
       }
       console.log("");
       console.log("Looks like we ran into an error.");

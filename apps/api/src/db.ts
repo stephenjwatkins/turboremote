@@ -456,3 +456,33 @@ export async function removeTeamMember(
 
   await commitTransaction(trx);
 }
+
+export async function fetchUsage(
+  token: string,
+  { accountId }: { accountId: number }
+) {
+  const knex = connect();
+  const trx = await knex.transaction();
+
+  const results = await trx
+    .select(["transfers.team_id", "type"])
+    .sum("artifacts.size_in_bytes")
+    .count("*")
+    .from("transfers")
+    .join("artifacts", "artifacts.id", "=", "transfers.artifact_id")
+    .whereRaw(
+      "date_trunc('month', transfers.created_at)::date = date_trunc('month', current_date)::date"
+    )
+    .whereIn("transfers.team_id", function () {
+      this.select("memberships.team_id")
+        .from("memberships")
+        .where("memberships.account_id", accountId);
+    })
+    .groupBy("type", "transfers.team_id");
+
+  await commitTransaction(trx);
+
+  console.log("results", results);
+
+  return results;
+}
