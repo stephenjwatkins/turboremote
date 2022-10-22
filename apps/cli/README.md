@@ -1,5 +1,4 @@
 <p>&nbsp;</p>
-<p>&nbsp;</p>
 
 <p align="center"">
   <img width="320" alt="Turboremote logo" src="https://turboremote.org/logo.svg?v=2022102201">
@@ -11,7 +10,6 @@
   </a>
 </p>
 
-<p>&nbsp;</p>
 <p>&nbsp;</p>
 
 ![turbo-screenshot](https://turboremote.org/screenshot@2x.png?v=2022102201)
