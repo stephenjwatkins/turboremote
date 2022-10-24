@@ -11,6 +11,9 @@ export function connect() {
     createKnex({
       client: "pg",
       connection: process.env.PG_CONNECTION_STRING,
+      pool: {
+        propagateCreateError: false,
+      },
     });
   return db;
 }

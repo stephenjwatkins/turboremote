@@ -34,7 +34,7 @@ export const evenSection = style({
   background: "#fff",
   "@media": {
     "(prefers-color-scheme: dark)": {
-      background: "#191919",
+      background: "#000",
     },
   },
 });

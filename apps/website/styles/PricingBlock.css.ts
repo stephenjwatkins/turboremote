@@ -60,7 +60,8 @@ export const includesPoints = style({
   flexWrap: "wrap",
   gap: 36,
   "@media": {
-    "(max-width: 600px)": {
+    "(max-width: 450px)": {
+      flexDirection: "column",
       gap: 12,
     },
   },

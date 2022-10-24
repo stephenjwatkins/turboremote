@@ -51,8 +51,6 @@ export const HomeScreen = () => {
             </div>
           </VStack>
         </VStack>
-      </VStack>
-      <div className={oddSection}>
         <div className={container}>
           <div className={videoBoxBlack}>
             <Video src="/link-video-dark.mp4?v=2022102201" className={video} />
@@ -65,7 +63,7 @@ export const HomeScreen = () => {
             <div className={videoBoxWhiteBorder} />
           </div>
         </div>
-      </div>
+      </VStack>
       <div className={evenSection}>
         <div className={container}>
           <PricingBlock />
