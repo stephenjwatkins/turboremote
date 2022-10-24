@@ -469,7 +469,13 @@ export async function fetchUsage(
     .sum("artifacts.size_in_bytes")
     .count("*")
     .from("transfers")
-    .join("artifacts", "artifacts.id", "=", "transfers.artifact_id")
+    .join("artifacts", function () {
+      this.on("artifacts.hash", "=", "transfers.artifact_hash").andOn(
+        "artifacts.team_id",
+        "=",
+        "transfers.team_id"
+      );
+    })
     .whereRaw(
       "date_trunc('month', transfers.created_at)::date = date_trunc('month', current_date)::date"
     )

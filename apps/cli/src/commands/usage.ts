@@ -58,8 +58,8 @@ export async function usage() {
     row: (g) => {
       return [
         g.teamName,
-        prettyBytes(parseInt(g.downloadSum, 10)),
-        prettyBytes(parseInt(g.uploadSum, 10)),
+        g.downloadSum ? prettyBytes(parseInt(g.downloadSum, 10)) : "0",
+        g.uploadSum ? prettyBytes(parseInt(g.uploadSum, 10)) : "0",
       ];
     },
   });
