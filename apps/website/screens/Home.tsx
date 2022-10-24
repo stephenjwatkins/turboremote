@@ -1,26 +1,34 @@
+import { ReactNode } from "react";
 import { CopyButton } from "../components/CopyButton";
 import { Logo } from "../components/Logo";
+import { PricingBlock } from "../components/PricingBlock";
 import { Text } from "../components/Text";
 import { Video } from "../components/Video";
 import { VStack } from "../components/VStack";
 import {
   container,
   logoBox,
+  pageContainer,
   video,
   videoBoxBlack,
   videoBoxWhite,
   videoBoxWhiteBorder,
+  oddSection,
+  evenSection,
   videoWhite,
+  question as cssQuestion,
+  questionQuestion,
+  questionAnswer,
 } from "../styles/Home.css";
 
 export const HomeScreen = () => {
   return (
-    <div className={container}>
-      <VStack gap={72} alignItems="center">
+    <div className={pageContainer}>
+      <VStack gap={72} alignItems="center" style={{ paddingBottom: 72 }}>
         <div className={logoBox}>
           <Logo />
         </div>
-        <VStack gap={36}>
+        <VStack gap={36} className={container}>
           <div>
             <Text style="headline">
               <p>
@@ -43,7 +51,9 @@ export const HomeScreen = () => {
             </div>
           </VStack>
         </VStack>
-        <div>
+      </VStack>
+      <div className={oddSection}>
+        <div className={container}>
           <div className={videoBoxBlack}>
             <Video src="/link-video-dark.mp4?v=2022102201" className={video} />
           </div>
@@ -55,15 +65,109 @@ export const HomeScreen = () => {
             <div className={videoBoxWhiteBorder} />
           </div>
         </div>
-        <div>
-          <Text style="body">
-            Made with ❤️ in South Carolina.
-            <br />
-            To reach us, send an email to{" "}
-            <a href="mailto:hello@turboremote.org">hello@turboremote.org</a>.
-          </Text>
+      </div>
+      <div className={evenSection}>
+        <div className={container}>
+          <PricingBlock />
         </div>
-      </VStack>
+      </div>
+      <div>
+        <VStack gap={36} className={container} style={{ paddingTop: 72 }}>
+          <div>
+            <Text style="title">Questions</Text>
+          </div>
+          <VStack gap={24} style={{ textAlign: "left" }}>
+            <Question
+              question={<>Why Turboremote?</>}
+              answer={
+                <>
+                  <p>
+                    Turboremote exists as an independent Remote Cache provider
+                    for Turborepo. It serves as an alternative to either hosting
+                    your own solution or buying into existing ecosystems. Simply
+                    connect to Turboremote and pay for what you use.
+                  </p>
+                </>
+              }
+            />
+            <Question
+              question={<>How do I get started?</>}
+              answer={
+                <>
+                  <p>
+                    Simply run <code>npx turboremote link</code> at the root of
+                    your Turborepo project. After providing a valid email
+                    address and team name, Turboremote will connect your project
+                    to our remote cache. That&apos;s it! You can now run
+                    Turborepo commands taking advantage of Turboremote cache.
+                    You&apos;ll be setup and running in less than a minute.
+                  </p>
+                </>
+              }
+            />
+            <Question
+              question={<>How do I learn more?</>}
+              answer={
+                <>
+                  <p>
+                    Turboremote can be managed through the{" "}
+                    <code>npx turboremote</code> CLI. You can manage your team,
+                    create access tokens for CI envirnoments, and more. Run{" "}
+                    <code>npx turboremote</code> at the root of your project to
+                    see a list of available commands.
+                  </p>
+                </>
+              }
+            />
+            <Question
+              question={<>Is Turboremote secure?</>}
+              answer={
+                <>
+                  <p>
+                    Yes. Turboremote utilizes all security capabilities that
+                    Turborepo provides. Turboremote uses secure connections and
+                    supports artifact signing.
+                  </p>
+                </>
+              }
+            />
+            <Question
+              question={<>How am I billed?</>}
+              answer={
+                <>
+                  <p>
+                    You will receive an email as you approach your free monthly
+                    allowance. If you exceed the allowance, you will be sent a
+                    bill for excess charges. Bills must be paid within two weeks
+                    to prevent disruption.
+                  </p>
+                </>
+              }
+            />
+          </VStack>
+        </VStack>
+      </div>
+      <div className={container} style={{ paddingTop: 72 }}>
+        <Text style="body">
+          Still have questions? Send us an email to{" "}
+          <a href="mailto:hello@turboremote.org">hello@turboremote.org</a>.
+          <br />
+          Made with ❤️ in South Carolina.
+        </Text>
+      </div>
     </div>
   );
 };
+
+const Question = ({
+  question,
+  answer,
+}: {
+  question: ReactNode;
+  answer: ReactNode;
+}) => (
+  <VStack gap={12} className={cssQuestion}>
+    <div className={questionQuestion}>{question}</div>
+    <div className={questionAnswer}>{answer}</div>
+  </VStack>
+);
