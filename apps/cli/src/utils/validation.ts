@@ -2,7 +2,7 @@ export function isValidEmail(email: string) {
   return (
     email.length > 5 &&
     email.indexOf("@") > 0 &&
-    email.indexOf(".") > email.indexOf("@")
+    email.lastIndexOf(".") > email.indexOf("@")
   );
 }
 
