@@ -66,7 +66,7 @@ export async function membersAdd() {
     if (invite.accepted_at) {
       console.log(`  ${email} added to ${team.name} on Turboremote.`);
     } else {
-      console.log(`  ${email} invited to ${team.name} on Turboremote.`);
+      console.log(`  ${email} sent an invite to ${team.name} on Turboremote.`);
     }
     console.log("");
   } catch (error) {

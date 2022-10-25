@@ -28,7 +28,7 @@ export async function membersRemove() {
   if (ownerMemberships.length === 0) {
     console.log("");
     console.log("  Looks like you aren't an owner of any team.");
-    console.log("  Adding members requires an ownership role.");
+    console.log("  Removing members requires an ownership role.");
     console.log("");
     console.log("  To create a team, run:");
     console.log(chalk.bold("  npx turboremote teams:create"));
