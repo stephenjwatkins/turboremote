@@ -5,30 +5,26 @@ export type Id = string | number;
 
 let db: Knex;
 
+function init() {
+  return createKnex({
+    client: "pg",
+    connection: process.env.PG_CONNECTION_STRING,
+    pool: {
+      propagateCreateError: false,
+    },
+  });
+}
+
 export function connect() {
-  db =
-    db ||
-    createKnex({
-      client: "pg",
-      connection: process.env.PG_CONNECTION_STRING,
-      pool: {
-        propagateCreateError: false,
-      },
-    });
+  db ||= init();
   return db;
 }
 
-export async function commitTransaction(trx: Knex.Transaction) {
-  try {
-    await trx.commit();
-  } catch (error) {
-    await trx.rollback();
-    throw error;
-  }
-}
-
-export async function fetchAccountFromToken(token: string) {
-  const knex = connect();
+export async function fetchAccountFromToken(
+  token: string,
+  trx?: Knex.Transaction<any, any[]>
+) {
+  const knex = trx ? trx : connect();
   const account = await knex
     .select("accounts.*")
     .from("accounts")
