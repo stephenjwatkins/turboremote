@@ -31,21 +31,29 @@ async function ensureLatest(argv: any) {
 
   console.log("");
   console.log(
-    chalk.yellow("  Looks like your Turboremote CLI is out of date.")
+    chalk.yellow(
+      `  Heads up! The installed version of Turboremote is out of date.`
+    )
   );
   console.log(
     chalk.yellow(
-      `  Your installed version is ${currentVersion}. The latest version is ${latestVersion}.`
+      `  Installed version is ${currentVersion}. Latest version is ${latestVersion}.`
     )
   );
+  console.log("");
   console.log(
-    chalk.yellow("  To install the latest version of Turboremote, run:")
-  );
-  console.log(
-    chalk.yellow.bold(
-      `  npx clear-npx-cache && npx turboremote ${argv._.join(" ")}`
+    chalk.yellow(
+      "  To install the latest version on the next run, clear the npx cache:"
     )
   );
+  console.log(chalk.yellow.bold(`  npx clear-npx-cache`));
+  console.log("");
+  console.log(
+    chalk.yellow(
+      "  Or, to use the latest version without clearing the cache, run:"
+    )
+  );
+  console.log(chalk.yellow.bold(`  npx turboremote@latest <cmd>`));
 
   await sleep(2000);
 }
