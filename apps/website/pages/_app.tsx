@@ -21,6 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
         <link rel="apple-touch-icon" href="/favicon@180w.png?v=2022102201" />
         <meta name="og:image" content="/social@1200w.png?v=2022102201" />
+        <meta content="Turboremote" name="apple-mobile-web-app-title" />
       </Head>
       <Component {...pageProps} />
     </>
