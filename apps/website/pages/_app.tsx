@@ -14,6 +14,11 @@ function MyApp({ Component, pageProps }: AppProps) {
           content="Turboremote is a frictionless Remote Cache provider for Turborepo. Be connected in less than a minute."
         />
         <link rel="icon" href="/favicon@32w.png?v=2022102201" sizes="any" />
+        <link
+          rel="icon"
+          href="/favicon.svg?v=2022102801"
+          type="image/svg+xml"
+        />
         <link rel="apple-touch-icon" href="/favicon@180w.png?v=2022102201" />
         <meta name="og:image" content="/social@1200w.png?v=2022102201" />
       </Head>
