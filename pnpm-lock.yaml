@@ -136,6 +136,7 @@ importers:
     specifiers:
       '@sentry/nextjs': ^7.15.0
       '@turboremote/request': '*'
+      '@types/gtag.js': ^0.0.12
       '@types/node': ^18.7.16
       '@types/react': 18.0.21
       '@types/react-dom': 18.0.6
@@ -159,6 +160,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
+      '@types/gtag.js': 0.0.12
       '@types/node': 18.8.0
       '@types/react': 18.0.21
       '@types/react-dom': 18.0.6
@@ -911,6 +913,10 @@ packages:
 
   /@types/estree/0.0.51:
     resolution: {integrity: sha512-CuPgU6f3eT/XgKKPqKd/gLZV1Xmvf1a2R5POBOGQa6uv82xpls89HU5zKeVoyR8XzHd1RGNOlQlvUe3CFkjWNQ==}
+
+  /@types/gtag.js/0.0.12:
+    resolution: {integrity: sha512-YQV9bUsemkzG81Ea295/nF/5GijnD2Af7QhEofh7xu+kvCN6RdodgNwwGWXB5GMI3NoyvQo0odNctoH/qLMIpg==}
+    dev: true
 
   /@types/inquirer/9.0.2:
     resolution: {integrity: sha512-MQc3adiIh/rDxLkjnvL03rSvuHg+/dKif4dn/MRsnE+oU1bAdyuDbW0w+ewR1M/M/u/Z0YAbw7NZYCpgQ5SW8A==}

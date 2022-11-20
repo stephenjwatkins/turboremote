@@ -6,6 +6,7 @@ import {
   clickToCopy,
   clickToCopyCopied,
 } from "../styles/CopyButton.css";
+import { sendEvent } from "../utils/analytics";
 
 export const CopyButton = () => {
   const timeoutRef = useRef<NodeJS.Timeout>();
@@ -18,6 +19,7 @@ export const CopyButton = () => {
         timeoutRef.current = setTimeout(() => {
           setCopyState("initial");
         }, 3500);
+        sendEvent("copied_command_to_clipboard");
       }}
       className={button}
       onPointerLeave={() => {
