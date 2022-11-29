@@ -21,14 +21,14 @@ export function printTurborepoConfig({
   console.log("  Usage with command line flags:");
   console.log(
     chalk.bold(
-      `  turbo run build --api=${apiUrl} --team=${teamIdToken} --token=${teamAccessToken}`
+      `  turbo run build --api=${apiUrl} --team=team_${teamIdToken} --token=${teamAccessToken}`
     )
   );
   console.log("");
   console.log("  Usage with environment variables:");
   console.log(
     chalk.bold(
-      `  TURBO_TOKEN=${teamAccessToken} TURBO_TEAM=${teamIdToken} turbo run build --api=${apiUrl}`
+      `  TURBO_TOKEN=${teamAccessToken} TURBO_TEAM=team_${teamIdToken} turbo run build --api=${apiUrl}`
     )
   );
 }

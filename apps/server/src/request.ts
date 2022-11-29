@@ -1,9 +1,14 @@
 export function parseRequest(request: any) {
   const { teamId: teamIdFromConfig, slug: teamIdFromCommand } =
     request.query as { teamId: string; slug?: string };
-  const { authorization } = request.headers;
-  const [, token] = authorization.split(" ");
   const teamId = teamIdFromCommand || teamIdFromConfig;
+
+  const { authorization } = request.headers;
+  if (!authorization) {
+    return { teamId, token: null };
+  }
+
+  const [, token] = authorization.split(" ");
   return { teamId, token };
 }
 
